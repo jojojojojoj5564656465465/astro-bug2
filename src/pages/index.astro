@@ -1,15 +1,26 @@
 ---
+import Layout from 'src/layouts/Layout.astro'
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="demo">
+
+			<h1>Astro read</h1>
+			<div class="yes">baravo world</div>
+			<div class="bg-red m-16-32">baravo world</div>
+			<div class="yes">baravo world</div>
+			<div class="yes">baravo world</div>
+</Layout>
+
+<style>
+	.yes{
+		margin:45px;
+		background-color:green;
+	}
+	h1{
+		color:red;
+
+	}
+	h1::before{
+		content:" test : "
+	}
+</style>

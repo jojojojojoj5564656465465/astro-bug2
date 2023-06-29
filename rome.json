@@ -1,0 +1,28 @@
+{
+	"$schema": "./node_modules/rome/configuration_schema.json",
+	"linter": {
+		"enabled": true,
+		"ignore": ["dist", "./node_modules/**"],
+		"rules": {
+			"recommended": true,
+			"suspicious": {
+				"noExplicitAny": "off"
+			}
+		}
+	},
+	"formatter": {
+		"enabled": true,
+		"ignore": ["dist"],
+		"indentStyle": "tab",
+		"lineWidth": 120
+	},
+
+	"javascript": {
+		"formatter": {
+			"semicolons": "asNeeded",
+			"trailingComma": "none",
+			"quoteStyle": "single",
+			"quoteProperties": "asNeeded"
+		}
+	}
+}

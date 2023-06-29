@@ -1,0 +1,9 @@
+#blog-content > ul > li {
+  list-style: circle;
+}
+#blog-content > ul > li::marker {
+  color: theme('colors.calltoaction');
+  list-style: circle;
+
+  /* color: theme('colors.calltoaction'); */
+}

@@ -1,0 +1,35 @@
+---
+import { SiteMetadata } from 'src/consts.ts'
+import { Icon } from 'astro-icon'
+let {
+	social: [Contact, SocialNetwork]
+} = SiteMetadata /* destructuring to get the social networks from consts */
+---
+
+<footer class="bg-ternary dark:bg-gray-900">
+	<div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
+		<hr class="mb-6 border-gray-200 lg:my-8 sm:mx-auto" />
+		<div class="sm:flex sm:items-center sm:justify-between">
+			<span class="text-sm text-text-light sm:text-center"
+				>© 2023 <a href="https://massage-kobido-lifting.com/" class="hover:underline">Marina Li - Paris</a>
+
+				<a href={`tel:+33${Contact[1].link.replace(/ /g, '').substring(1)}`} class="hover:underline"
+					>{Contact[1].link}</a
+				>
+			</span>
+			<div class="mt-4 flex sm:mt-0 sm:justify-center space-x-6">
+				{
+					SocialNetwork.filter(Boolean)?.map(({ icon, link }) => {
+						return (
+							<>
+								<a href={link} class="text-text-light hover:text-gray-900 dark:hover:text-white">
+									<Icon class="aspect-square size-5 text-primary-dark" name={icon} />
+								</a>
+							</>
+						)
+					})
+				}
+			</div>
+		</div>
+	</div>
+</footer>

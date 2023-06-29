@@ -1,0 +1,45 @@
+@import url('/public/fontface.css');
+
+:root {
+  --primary: #007bff;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --info: #17a2b8;
+  --light: #f8f9fa;
+  --dark: #343a40;
+}
+
+h1 {
+  @apply font-title text-6xl pt-6;
+}
+:is(h2, h3, h4) {
+  @apply family-Yrsa_Variable;
+}
+h2 {
+  @apply text-3xl font-800 text-red;
+}
+h3 {
+  @apply text-xl font-600 text-pink;
+}
+
+h4 {
+  @apply text-lg font-600 from-white to-yell bg-gradient-to-rt text-transparent bg-clip-text;
+}
+h5 {
+  @apply text-primary text-md font-400;
+}
+h6 {
+  @apply text-ternary text-base font-400;
+}
+:where(h5, h6, p, li, span, ul) {
+  @apply family-Hind_Guntur text-white text-base;
+}
+.btn-calltoaction {
+  @apply max-w-max bg-calltoaction inline-block text-secondary p-3-6 hover:(bg-yell text-primary);
+}
+
+body {
+  @apply bg-bg;
+}
