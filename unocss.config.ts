@@ -111,35 +111,35 @@ export default defineConfig({
 				}
 			},
 			{ autocomplete: 'flex-(col|row)-(1|2|3|4|5|6|7|8|9)' }
+		],
+		[
+			/^p-(\d+)-(\d+)?-?(\d+|auto)?-?(\d+|auto)?$/,
+			([, t, r, b, l]) => {
+				const effectiveArr: string[] = [t, r, b, l].filter(Boolean)
+				const paddingList: string[] = []
+				for (const e of effectiveArr) {
+					if (!e || e === 'auto') {
+						paddingList.push('auto')
+					} else paddingList.push(`${Number(e) / 4}rem`)
+				}
+				return { padding: paddingList.join(' ') }
+			},
+			{ autocomplete: 'p-<num>-<num>-<num>-<num>' }
+		],
+		[
+			/^m-(\d+)-(\d+)?-?(\d+|auto)?-?(\d+|auto)?$/,
+			([, t, r, b, l]) => {
+				const effectiveArr: string[] = [t, r, b, l].filter(Boolean)
+				const marginList: string[] = []
+				for (const e of effectiveArr) {
+					if (!e || e === 'auto') {
+						marginList.push('auto')
+					} else marginList.push(`${Number(e) / 4}rem`)
+				}
+				return { margin: marginList.join(' ') }
+			},
+			{ autocomplete: 'm-<num>-<num>-<num>-<num>' }
 		]
-		// [
-		// 	/^p-(\d+)-(\d+)?-?(\d+|auto)?-?(\d+|auto)?$/,
-		// 	([, t, r, b, l]) => {
-		// 		const effectiveArr: string[] = [t, r, b, l].filter(Boolean)
-		// 		const paddingList: string[] = []
-		// 		for (const e of effectiveArr) {
-		// 			if (!e || e === 'auto') {
-		// 				paddingList.push('auto')
-		// 			} else paddingList.push(`${Number(e) / 4}rem`)
-		// 		}
-		// 		return { padding: paddingList.join(' ') }
-		// 	},
-		// 	{ autocomplete: 'p-<num>-<num>-<num>-<num>' }
-		// ],
-		// [
-		// 	/^m-(\d+)-(\d+)?-?(\d+|auto)?-?(\d+|auto)?$/,
-		// 	([, t, r, b, l]) => {
-		// 		const effectiveArr: string[] = [t, r, b, l].filter(Boolean)
-		// 		const marginList: string[] = []
-		// 		for (const e of effectiveArr) {
-		// 			if (!e || e === 'auto') {
-		// 				marginList.push('auto')
-		// 			} else marginList.push(`${Number(e) / 4}rem`)
-		// 		}
-		// 		return { margin: marginList.join(' ') }
-		// 	},
-		// 	{ autocomplete: 'm-<num>-<num>-<num>-<num>' }
-		// ]
 	],
 	shortcuts: [
 		[
