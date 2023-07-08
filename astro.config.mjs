@@ -26,9 +26,11 @@ export default defineConfig({
     injectReset: true // or a path to the reset file
   }), critters(), sitemap(), compress(), robotsTxt(), mdx({
     commonmark: true
-  }), image({
-    serviceEntryPoint: '@astrojs/image/sharp'
-  })]
+  })
+	// , image({
+  //   //serviceEntryPoint: '@astrojs/image/sharp'
+  // })
+]
 
   //output: 'server',
   //adapter: cloudflare()
