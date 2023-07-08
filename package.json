@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^6.6.0",
+    "@astrojs/deno": "^4.2.0",
     "@astrojs/image": "^0.16.9",
     "@fontsource-variable/playfair-display": "^5.0.5",
     "@fontsource-variable/yrsa": "^5.0.5",

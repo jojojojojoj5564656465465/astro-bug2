@@ -36,17 +36,7 @@ export default defineConfig({
 				// include js/ts files
 				'src/**/*.{js,ts}'
 			],
-			exclude: [
-				'node_modules',
-				'dist',
-				'.git',
-				'.husky',
-				'.vscode',
-				'public',
-				'build',
-				'mock',
-				'./stats.html'
-			]
+			exclude: ['node_modules', 'dist', '.git', '.husky', '.vscode', 'public', 'build', 'mock', './stats.html']
 		}
 	},
 
@@ -64,8 +54,7 @@ export default defineConfig({
 		[
 			'text-shadow',
 			{
-				'text-shadow':
-					'-1px -1px 1px #000, 1px -1px 1px #673b2c, -1px 1px 1px #673b2c, 1px 1px 1px #673b2c'
+				'text-shadow': '-1px -1px 1px #000, 1px -1px 1px #673b2c, -1px 1px 1px #673b2c, 1px 1px 1px #673b2c'
 			}
 		],
 		[
@@ -76,36 +65,50 @@ export default defineConfig({
 			}
 		],
 		[
+			/^flex\|([0-9])\|([0-9])\|?([a-z0-9%]{2,})?$/,
+			([, grow, shrink, basis]) => {
+				if (Number(basis) && !basis.includes("%") ) {
+					basis = `${Number(basis) / 4}rem`
+				}
+				return {
+					flex: `${grow} ${shrink} ${basis || 'auto'}`
+				}
+			}
+		],
+		[
 			/^flex-(row|col)-([1-9])$/,
 			([, direction, number]) => {
-				type PositionProps = Readonly<'start' | 'center' | 'end'>
-				const positions = {
-					1: ['start', 'start'],
-					2: ['center', 'start'],
-					3: ['end', 'start'],
-					4: ['start', 'center'],
-					5: ['center', 'center'],
-					6: ['end', 'center'],
-					7: ['start', 'end'],
-					8: ['center', 'end'],
-					9: ['end', 'end']
-				} as const satisfies Record<
-					number,
-					readonly [PositionProps, PositionProps]
-				>
+				// type PositionProps = Readonly<'start' | 'center' | 'end'>
+				// const positions = {
+				// 	1: ['start', 'start'],
+				// 	2: ['center', 'start'],
+				// 	3: ['end', 'start'],
+				// 	4: ['start', 'center'],
+				// 	5: ['center', 'center'],
+				// 	6: ['end', 'center'],
+				// 	7: ['start', 'end'],
+				// 	8: ['center', 'end'],
+				// 	9: ['end', 'end']
+				// } as const satisfies Record<number, readonly [PositionProps, PositionProps]>
 
-				//IIFE ==>
-				const direction2 = ((): 'row' | 'column' => {
-					const d = direction as Readonly<'row' | 'col'>
-					return d === 'row' ? 'row' : 'column'
-				})()
+				const positionsArray = ['start', 'center', 'end'] as const
+				type PositionProps = typeof positionsArray[number]
+				const positions: Record<number, readonly [PositionProps, PositionProps]> = {}
+				let count = Number(1)
+				// for loop to create all permutation
+				for (let i = 0; i < positionsArray.length; i++) {
+					for (let j = 0; j < positionsArray.length; j++) {
+						positions[count] = [positionsArray[i], positionsArray[j]]
+						count++
+					}
+				}
+				const columORrow: 'column' | 'row' = direction === 'row' ? 'row' : 'column'
 
-				const [justify, align] =
-					positions[Number(number) as keyof typeof positions]
+				const [justify, align] = positions[Number(number) as keyof typeof positions]
 
 				return {
 					display: 'flex',
-					'flex-direction': direction2,
+					'flex-direction': columORrow,
 					'justify-content': justify,
 					'align-items': align
 				}
@@ -113,79 +116,81 @@ export default defineConfig({
 			{ autocomplete: 'flex-(col|row)-(1|2|3|4|5|6|7|8|9)' }
 		],
 		[
-			/^p-(\d+)-(\d+)?-?(\d+|auto)?-?(\d+|auto)?$/,
-			([, t, r, b, l]) => {
-				const effectiveArr: string[] = [t, r, b, l].filter(Boolean)
-				const paddingList: string[] = []
-				for (const e of effectiveArr) {
+			/^(p|m)-(\d+)-(\d+)?-?(\d+|auto)?-?(\d+|auto)?$/,
+			([, PaddingOrMargin, t, r, b, l]) => {
+				const isPadding = PaddingOrMargin === 'm' ? false : true
+				const List: string[] = []
+				for (const e of [t, r, b, l].filter(Boolean)) {
 					if (!e || e === 'auto') {
-						paddingList.push('auto')
-					} else paddingList.push(`${Number(e) / 4}rem`)
+						List.push('auto')
+					} else List.push(`${Number(e) / 4}em`)
 				}
-				return { padding: paddingList.join(' ') }
+				return isPadding ? { padding: List.join(' ') } : { margin: List.join(' ') }
 			},
-			{ autocomplete: 'p-<num>-<num>-<num>-<num>' }
+			{ autocomplete: 'p|m-<num>-<num>-<num>-<num>' }
 		],
 		[
-			/^m-(\d+)-(\d+)?-?(\d+|auto)?-?(\d+|auto)?$/,
-			([, t, r, b, l]) => {
-				const effectiveArr: string[] = [t, r, b, l].filter(Boolean)
-				const marginList: string[] = []
-				for (const e of effectiveArr) {
-					if (!e || e === 'auto') {
-						marginList.push('auto')
-					} else marginList.push(`${Number(e) / 4}rem`)
+			/^(px|py|mx|my)-(\d+)-?(\d+)?$/,
+			([, direction, s, optional]) => {
+				const Direction = ['padding-inline', 'padding-block', 'margin-inline', 'margin-block'] as const
+				const directionXorY = (string: string): typeof Direction[number] => {
+					const dictionary = {
+						p: 'padding',
+						m: 'margin',
+						y: 'block',
+						x: 'inline'
+					} as const satisfies Record<string, string>
+					type DictionaryValues = typeof dictionary[keyof typeof dictionary]
+					const set: DictionaryValues[] = []
+					for (const letter of string) {
+						set.push(dictionary[letter as keyof typeof dictionary])
+					}
+					return set.join('-') as typeof Direction[number]
 				}
-				return { margin: marginList.join(' ') }
+
+				const returndirection = directionXorY(direction)
+				let value = `${+s / 4}em`
+				value += optional ? ` ${+optional / 4}em` : ''
+				return { [returndirection]: value }
 			},
-			{ autocomplete: 'm-<num>-<num>-<num>-<num>' }
+			{ autocomplete: 'px|py|mx|my-<num>-<num>' }
+		],
+		[
+			/^size-(\d+)$/,
+			([, s]) => {
+				return [
+					{
+						'block-size': `${+s / 4}rem`,
+						'inline-size': `${+s / 4}rem`
+					}
+				]
+			},
+			{ autocomplete: 'size-<num>' }
 		]
 	],
+
 	shortcuts: [
 		[
-			/^(font|bg|border|stroke|outline|ring|divide|text)-\[(.*)\]$/,
+			/^(font|bg|border|stroke|outline|underline|ring|divide|text)-\[(.*)\]$/,
 			([, category, stringElement]) => {
-				type Category =
-					| 'font'
-					| 'bg'
-					| 'border'
-					| 'stroke'
-					| 'outline'
-					| 'text'
-					| 'ring'
-					| 'divide'
-				type MediaQuery = 'sm' | 'md' | 'lg' | 'xl' | '2xl'
-				const categories: readonly Category[] = [
-					'font',
-					'bg',
-					'border',
-					'stroke',
-					'outline',
-					'text',
-					'ring',
-					'divide'
-				]
-				const mediaQuery: readonly MediaQuery[] = [
-					'sm',
-					'md',
-					'lg',
-					'xl',
-					'2xl'
-				]
-				const rulesForBrakets: Record<string, string> = {
+				const mediaQuery = ['sm', 'md', 'lg', 'xl', '2xl'] as const
+
+				type MediaQuery = typeof mediaQuery[number]
+				const rulesForBrakets: Record<'open' | 'close', string> = {
 					open: '[',
 					close: ']'
 				}
 
-				if (!categories.includes(category as Category)) {
-					throw new Error(`category in not in unocss list config=> ${category}`)
+				const removeSpaceInString = (string: string): string => {
+					return string.trim().replace(/,+/g, ' ').replace(/\s+/g, ',').replace(/\|/g, ',')
 				}
 
 				function splitString(str: string): Set<string> {
 					const result = new Set<string>()
 					let currentElement = ''
 					let parenthesesCount = true
-					for (const char of str) {
+
+					for (const char of removeSpaceInString(str)) {
 						if (char === rulesForBrakets.open) {
 							parenthesesCount = false
 						} else if (char === rulesForBrakets.close) {
@@ -204,14 +209,10 @@ export default defineConfig({
 					return result
 				}
 
-				const arraySet = splitString(stringElement)
-
-				const regexAtribuffy = new RegExp(
-					`([^:]+):\\${rulesForBrakets.open}([^\\]]+)\\${rulesForBrakets.close}$`
-				)
+				const regexAtribuffy = new RegExp(`([^:]+):\\${rulesForBrakets.open}([^\\]]+)\\${rulesForBrakets.close}$`)
 				const mycustomSet = new Set<string>()
 
-				for (const v of arraySet) {
+				for (const v of splitString(stringElement)) {
 					if (v.includes(':')) {
 						if (v.match(regexAtribuffy)) {
 							const match = v.match(regexAtribuffy)
@@ -262,8 +263,7 @@ export default defineConfig({
 					return `bg-${color} hover:bg-${color} focus:(rotate-1 bg-${color}) ${defaultBtn}`
 				} else {
 					const [c, d] = color.split('-')
-					const e: string =
-						~~d > 500 ? (~~d - 200).toString() : (~~d + 200).toString()
+					const e: string = ~~d > 500 ? (~~d - 200).toString() : (~~d + 200).toString()
 					return `bg-${c}-${d} hover:bg-${c}-${e} focus:(rotate-1 bg-${c}-${e}) ${defaultBtn}`
 				}
 			},
@@ -271,13 +271,12 @@ export default defineConfig({
 		],
 
 		{
-			container:
-				'px-1 relative 2xl:px-[calc(50%-(81rem/2))] xl:(px-[calc(50%-(71rem/2))] mx-auto) box-border'
+			container: 'px-1 relative 2xl:px-[calc(50%-(81rem/2))] xl:(px-[calc(50%-(71rem/2))] mx-auto) box-border'
 		},
 		{
 			'absolute-center': '-translate-1/2 left-1/2 top-1/2'
-		},
-		[/^size-(\d)$/, ([, s]) => `h-${s} w-${s}`, { autocomplete: 'size-<num>' }]
+		}
+		//[/^size-(\d)$/, ([, s]) => `h-${s} w-${s}`, { autocomplete: 'size-<num>' }],
 	],
 	theme: {
 		colors: {
