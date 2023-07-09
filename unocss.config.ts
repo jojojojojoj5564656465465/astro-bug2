@@ -36,7 +36,17 @@ export default defineConfig({
 				// include js/ts files
 				'src/**/*.{js,ts}'
 			],
-			exclude: ['node_modules', 'dist', '.git', '.husky', '.vscode', 'public', 'build', 'mock', './stats.html']
+			exclude: [
+				'node_modules',
+				'dist',
+				'.git',
+				'.husky',
+				'.vscode',
+				'public',
+				'build',
+				'mock',
+				'./stats.html'
+			]
 		}
 	},
 
@@ -54,7 +64,8 @@ export default defineConfig({
 		[
 			'text-shadow',
 			{
-				'text-shadow': '-1px -1px 1px #000, 1px -1px 1px #673b2c, -1px 1px 1px #673b2c, 1px 1px 1px #673b2c'
+				'text-shadow':
+					'-1px -1px 1px #000, 1px -1px 1px #673b2c, -1px 1px 1px #673b2c, 1px 1px 1px #673b2c'
 			}
 		],
 		[
@@ -67,7 +78,7 @@ export default defineConfig({
 		[
 			/^flex\|([0-9])\|([0-9])\|?([a-z0-9%]{2,})?$/,
 			([, grow, shrink, basis]) => {
-				if (Number(basis) && !basis.includes("%") ) {
+				if (Number(basis) && !basis.includes('%')) {
 					basis = `${Number(basis) / 4}rem`
 				}
 				return {
@@ -92,8 +103,11 @@ export default defineConfig({
 				// } as const satisfies Record<number, readonly [PositionProps, PositionProps]>
 
 				const positionsArray = ['start', 'center', 'end'] as const
-				type PositionProps = typeof positionsArray[number]
-				const positions: Record<number, readonly [PositionProps, PositionProps]> = {}
+				type PositionProps = (typeof positionsArray)[number]
+				const positions: Record<
+					number,
+					readonly [PositionProps, PositionProps]
+				> = {}
 				let count = Number(1)
 				// for loop to create all permutation
 				for (let i = 0; i < positionsArray.length; i++) {
@@ -102,9 +116,11 @@ export default defineConfig({
 						count++
 					}
 				}
-				const columORrow: 'column' | 'row' = direction === 'row' ? 'row' : 'column'
+				const columORrow: 'column' | 'row' =
+					direction === 'row' ? 'row' : 'column'
 
-				const [justify, align] = positions[Number(number) as keyof typeof positions]
+				const [justify, align] =
+					positions[Number(number) as keyof typeof positions]
 
 				return {
 					display: 'flex',
@@ -125,27 +141,34 @@ export default defineConfig({
 						List.push('auto')
 					} else List.push(`${Number(e) / 4}em`)
 				}
-				return isPadding ? { padding: List.join(' ') } : { margin: List.join(' ') }
+				return isPadding
+					? { padding: List.join(' ') }
+					: { margin: List.join(' ') }
 			},
 			{ autocomplete: 'p|m-<num>-<num>-<num>-<num>' }
 		],
 		[
 			/^(px|py|mx|my)-(\d+)-?(\d+)?$/,
 			([, direction, s, optional]) => {
-				const Direction = ['padding-inline', 'padding-block', 'margin-inline', 'margin-block'] as const
-				const directionXorY = (string: string): typeof Direction[number] => {
+				const Direction = [
+					'padding-inline',
+					'padding-block',
+					'margin-inline',
+					'margin-block'
+				] as const
+				const directionXorY = (string: string): (typeof Direction)[number] => {
 					const dictionary = {
 						p: 'padding',
 						m: 'margin',
 						y: 'block',
 						x: 'inline'
 					} as const satisfies Record<string, string>
-					type DictionaryValues = typeof dictionary[keyof typeof dictionary]
+					type DictionaryValues = (typeof dictionary)[keyof typeof dictionary]
 					const set: DictionaryValues[] = []
 					for (const letter of string) {
 						set.push(dictionary[letter as keyof typeof dictionary])
 					}
-					return set.join('-') as typeof Direction[number]
+					return set.join('-') as (typeof Direction)[number]
 				}
 
 				const returndirection = directionXorY(direction)
@@ -175,14 +198,18 @@ export default defineConfig({
 			([, category, stringElement]) => {
 				const mediaQuery = ['sm', 'md', 'lg', 'xl', '2xl'] as const
 
-				type MediaQuery = typeof mediaQuery[number]
+				type MediaQuery = (typeof mediaQuery)[number]
 				const rulesForBrakets: Record<'open' | 'close', string> = {
 					open: '[',
 					close: ']'
 				}
 
 				const removeSpaceInString = (string: string): string => {
-					return string.trim().replace(/,+/g, ' ').replace(/\s+/g, ',').replace(/\|/g, ',')
+					return string
+						.trim()
+						.replace(/,+/g, ' ')
+						.replace(/\s+/g, ',')
+						.replace(/\|/g, ',')
 				}
 
 				function splitString(str: string): Set<string> {
@@ -209,7 +236,9 @@ export default defineConfig({
 					return result
 				}
 
-				const regexAtribuffy = new RegExp(`([^:]+):\\${rulesForBrakets.open}([^\\]]+)\\${rulesForBrakets.close}$`)
+				const regexAtribuffy = new RegExp(
+					`([^:]+):\\${rulesForBrakets.open}([^\\]]+)\\${rulesForBrakets.close}$`
+				)
 				const mycustomSet = new Set<string>()
 
 				for (const v of splitString(stringElement)) {
@@ -263,7 +292,8 @@ export default defineConfig({
 					return `bg-${color} hover:bg-${color} focus:(rotate-1 bg-${color}) ${defaultBtn}`
 				} else {
 					const [c, d] = color.split('-')
-					const e: string = ~~d > 500 ? (~~d - 200).toString() : (~~d + 200).toString()
+					const e: string =
+						~~d > 500 ? (~~d - 200).toString() : (~~d + 200).toString()
 					return `bg-${c}-${d} hover:bg-${c}-${e} focus:(rotate-1 bg-${c}-${e}) ${defaultBtn}`
 				}
 			},
@@ -271,7 +301,8 @@ export default defineConfig({
 		],
 
 		{
-			container: 'px-1 relative 2xl:px-[calc(50%-(81rem/2))] xl:(px-[calc(50%-(71rem/2))] mx-auto) box-border'
+			container:
+				'px-1 relative 2xl:px-[calc(50%-(81rem/2))] xl:(px-[calc(50%-(71rem/2))] mx-auto) box-border'
 		},
 		{
 			'absolute-center': '-translate-1/2 left-1/2 top-1/2'

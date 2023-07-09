@@ -9,7 +9,8 @@
     "wrangler": "wireit",
     "lint:scss": "wireit",
     "check-eslint": "wireit",
-    "format": "wireit"
+    "format": "wireit",
+    "deno": "wireit"
   },
   "wireit": {
     "start": {
@@ -31,6 +32,12 @@
       "command": "nix wrangler pages deploy ./dist",
       "dependencies": [
         "format",
+        "build"
+      ]
+    },
+    "deno": {
+      "command": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs",
+      "dependencies": [
         "build"
       ]
     },

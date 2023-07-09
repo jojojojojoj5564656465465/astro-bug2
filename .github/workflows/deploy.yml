@@ -28,6 +28,6 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "hard-dingo-47"
-          entrypoint: "server/entry.mjs" # 📝 Update the entrypoint
-          root: "dist" # 📝 Update the root
+          project: 'hard-dingo-47'
+          entrypoint: 'server/entry.mjs' # 📝 Update the entrypoint
+          root: 'dist' # 📝 Update the root
