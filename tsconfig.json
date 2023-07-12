@@ -1,6 +1,23 @@
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "strictNullChecks": true
+    "noEmit": true,
+    "strictNullChecks": true,
+    "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "types": ["@astrojs/image/client"],
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@mini/*": ["@components/miniComoponents/*"],
+      "@assets/*": ["src/assets/*"],
+      "@style/*": ["src/Style/*"],
+      "@content/*": ["src/content/*"],
+      "@massage/*": ["@content/massages/*"],
+      "@img/*": ["public/assets/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@data/*": ["src/data/*"]
+    }
   }
 }
