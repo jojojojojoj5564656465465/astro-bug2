@@ -1,0 +1,21 @@
+:is(h1, h2, h3, span):hover::before {
+  opacity: 0.8;
+  position: absolute;
+  translate: 0 30px;
+  font-weight: 900;
+  font-size: 18px;
+  color: black;
+}
+
+h1:hover::before {
+  content: '^h1';
+}
+h2:hover::before {
+  content: '^h2';
+}
+h3:hover::before {
+  content: '^h3';
+}
+span:hover::before {
+  content: '^span';
+}

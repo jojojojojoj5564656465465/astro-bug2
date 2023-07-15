@@ -1,0 +1,60 @@
+---
+export interface Props {
+	name: string
+	review: string
+}
+const { name, review } = Astro.props
+---
+
+<section class="flex-row-5 relative flex|1|0|40 mx-1">
+	<figure class="snip1533 border-[t-7,primary,rd-5] mx-10 my-5-10 bg-white drop-shadow-lg shadow-red-900  text-[secondary,center]" area-label={` avis des clients ${review}`}>
+		<figcaption class="before:(bg-slate-300 text-primary)">
+			<blockquote>
+				<p class="capitalize text-[base,ternary] after:content-['&raquo;']  before:content-['&laquo;']">{review}</p>
+			</blockquote>
+			<h3 class="mx-auto text-[md,slate-900] font-light leading-6 capitalize">{name}</h3>
+		</figcaption>
+	</figure>
+</section>
+
+<style>
+	@import url(https://fonts.googleapis.com/css?family=Roboto:300,400);
+	@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
+	
+
+	.snip1533 *,
+	.snip1533 *:before {
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		-webkit-transition: all 0.1s ease-out;
+		transition: all 0.1s ease-out;
+	}
+
+	.snip1533 figcaption {
+		padding: 13% 10% 12%;
+	}
+
+	.snip1533 figcaption:before {
+		-webkit-transform: translateX(-50%);
+		transform: translateX(-50%);
+
+		border-radius: 50%;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+		/* color: #d2652d; */
+		content: '\f10e';
+		font-family: 'FontAwesome';
+		font-size: 32px;
+		font-style: normal;
+		left: 50%;
+		line-height: 60px;
+		position: absolute;
+		top: -30px;
+		width: 60px;
+	}
+
+	.snip1533 blockquote {
+		font-style: italic;
+		font-weight: 300;
+		margin: 0 0 20px;
+	}
+</style>

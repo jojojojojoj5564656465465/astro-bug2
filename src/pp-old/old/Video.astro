@@ -1,0 +1,12 @@
+---
+export interface Props {
+	FileName: string
+	extension?: string
+}
+const { FileName, extension = 'mp4' } = Astro.props
+const root = 'src/assets/video/'
+---
+
+<video id="background-video" autoPlay loop muted>
+	<source src={`${root}${FileName}.${extension}`} type={`video/${extension}`} />
+</video>

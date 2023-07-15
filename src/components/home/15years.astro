@@ -1,0 +1,45 @@
+---
+---
+
+<section class="relative flex-col-2 my-10 container md:(grid grid-cols-2 gap-5)">
+	<div class="bg-image ring-3 ring-red"></div>
+	<div class="w-full gap-6 flex-col-1 md:w-3/4 ">
+		<h4 class="from-yellow-200 via-yell to-calltoaction bg-gradient-to-tr text-[lg,transparent] px-6-5">
+			Experience et connaisances de 15 ans
+		</h4>
+		<p class="leading-8">
+			Tout au long de ces années, j'ai pu apprendre les techniques les plus performante, qui associent relaxation
+			et bien être
+		</p>
+		<button class="rounded-full text-base btn-calltoaction">Rendez-vous</button>
+	</div>
+</section>
+
+<style>
+	.bg-image {
+		background-image: url('https://images.unsplash.com/photo-1519823551278-64ac92734fb1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80'),
+			url('https://images.unsplash.com/photo-1675159364615-38e1f6b62282?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80'),
+			url('https://images.unsplash.com/photo-1610402601271-5b4bd5b3eba4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+		background-size: 30%, 40%, 30%;
+		background-position: top 15px left 38%, top -20px right 20%, bottom right 78px;
+		background-repeat: no-repeat;
+	}
+	@media (max-width: 750px) {
+		.bg-image {
+			background-size: 40%, 50%, 41%;
+			background-position: top 15px left 8%, top -20px right 20%, top 20px right 58px;
+		}
+	}
+	@media (max-width: 950px) {
+		.bg-image {
+			background-size: 40%, 50%, 41%;
+			background-position: top 15px left 8%, top -20px right 20%, center right 58px;
+		}
+	}
+	@media (max-width: 395px) {
+		.bg-image {
+			background-size: 15%, 20%, 31%;
+			background-position: top 15px left 8%, top -20px right 20%, center right 58px;
+		}
+	}
+</style>

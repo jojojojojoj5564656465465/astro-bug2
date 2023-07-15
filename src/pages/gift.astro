@@ -1,0 +1,21 @@
+---
+import ExtraProductHomePage from '@components/miniComoponents/ExtraProductHomePage.astro'
+import Layout from 'src/layouts/Layout.astro'
+---
+
+<Layout title="nos tarifs pour les massages">
+	<div class="grid grid-cols-2">
+		<ExtraProductHomePage
+			svg="call"
+			notification="30%"
+			title="Offre Spéciale VOLUME"
+			text="Ramenez une ami et bénéficiez une réduction de 20% sur tout les prestation extension de cil (VOLUMES) pour vous et votre ami.  "
+		/>
+		<ExtraProductHomePage
+			svg="gift"
+			notification="+1"
+			title="Massage en Cadeau"
+			text="Offrez un cadeau inoubliable a votre partenaire ou a vos amis. Choisissez entre un massage relaxant ou un massage du visage MTS face-lift."
+		/>
+	</div>
+</Layout>

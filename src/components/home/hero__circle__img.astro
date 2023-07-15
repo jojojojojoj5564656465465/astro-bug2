@@ -1,0 +1,27 @@
+---
+// import { Picture } from '@astrojs/image/components'
+//import Image from 'astro-media'
+export interface Props {
+	alt: string
+	src: ImageMetadata
+	clx?: string[]
+}
+const { alt, src, clx } = Astro.props
+---
+
+<section class="w-full flex-row-5">
+	<div
+		class=`relative m-auto h-80 w-80 cursor-pointer overflow-y-hidden rounded-b-full lg:(top-20 mb-25 h-125 w-125 -translate-y-5) md:(mb-5 h-96 w-96) ${clx && clx.join(' ')}`>
+		<svg class="absolute bottom-0 z-0 h-full w-full rounded-t-full fill-bgstrong">
+			<circle cx="50%" cy="50%" r="50%"></circle>
+		</svg>
+		<!-- <Image
+			widths={[400, 768, 1024, 2040]}
+			src={src}
+			alt={alt}
+			class="relative absolute-center object-contain transition duration-300 delay-100 ease-in-out md:bottom-1 -translate-y-30 hover:-translate-y-40 md:-translate-y-40 md:hover:-translate-y-54"
+		/> -->
+	</div>
+</section>
+
+<style></style>

@@ -1,0 +1,20 @@
+---
+import { MenuItems } from 'src/data/MenuItems'
+---
+
+<nav class="my-6 list-none gap-6 flex-row-3">
+	{
+		MenuItems.map(({ title, url, icon }) => (
+			<li class="capitalize" data-content={icon} area-label={title}>
+				<a aria-label={`lien vers ${title}`} href={url}>
+					{title}
+				</a>
+			</li>
+		))
+	}
+</nav>
+<style>
+	li::before {
+		content: attr(data-content);
+	}
+</style>

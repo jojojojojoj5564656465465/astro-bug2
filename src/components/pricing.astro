@@ -1,0 +1,28 @@
+---
+import type { ServiceType } from 'src/data/pricing.ts'
+const list: ServiceType[] = Astro.props.list // une autre façon de faire les props
+---
+
+<section class="bg-green-2 container">
+	{
+		list.map(({ title, pricing }) => (
+			<section class="bg-ternary" aria-label={`${title} - fais par marina`}>
+				<h3 class="mb-6 border-[4,slate-100] py-4 text-[center,xl,text-dark]">{title}</h3>
+				<ul class="w-full border-secondary sm:(grid grid-cols-2 gap-5 bg-ternary)">
+					{pricing.map(({ name, price, description }) => (
+						<li class="m-3 py-1">
+							<div class="mb-3 block sm:flex">
+								<h5 class="mr-auto text-[md,slate-100] font-600 sm:tracking-wider">{name}</h5>
+								<span class="md:(border-[1,b-slate-400,dashed] mx-9 my-auto grow)" />
+								<p class="inline rounded-md text-[sm,green-100,center] tabular-nums sm:(my-auto min-w-16)">
+									{price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}€
+								</p>
+							</div>
+							<p class="block text-[xs,light]">{description}</p>
+						</li>
+					))}
+				</ul>
+			</section>
+		))
+	}
+</section>

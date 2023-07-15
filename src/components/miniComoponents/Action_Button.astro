@@ -1,0 +1,41 @@
+---
+export interface Props {
+	text: string
+	icon?: string
+	href: string
+	btnColor?: string
+	textColor: string
+	mobileANDpc?: boolean
+	clx?: string[]
+}
+
+let { text, icon, href, btnColor, textColor, mobileANDpc = true, clx } = Astro.props
+
+const txt = (textColor: string): string => {
+	const regex = /^text-([a-z]+)-([1-8][0-9]{2}|900)$/
+	const result = regex.exec(textColor)
+
+	if (result) {
+		let [, color, d]: string[] = result
+		const e = d && ~~d > 500 ? ~~d - 200 : d && ~~d + 200
+		return `text-sm text-${color}-${d} text-center hover:text-${color}-${e} border-1 border border-${color}-${d} focus:(text-md) rounded-lg block md:inline-block`
+	} else {
+		throw new Error(`Invalid text color format // MAUVAISE COULEUR: ${textColor}`)
+	}
+}
+---
+
+<a
+	class:list={[
+		btnColor,
+		txt(textColor),
+		mobileANDpc ? 'inline' : 'md-hidden',
+		clx && clx.join(' '),
+		'border border-1',
+		'p-4-8'
+	]}
+	href={href}
+	area-label={`bouton interne ${text}`}>
+	<i class={icon}></i>
+	{text.charAt(0).toUpperCase() + text.slice(1)}
+</a>

@@ -1,0 +1,275 @@
+---
+// import { Icon } from 'astro-icon'
+// import { Image, Picture } from '@astrojs/image/components'
+import Image from 'astro-media'
+import { HTMLElement, IntersectionObserver, MouseEvent } from '/node_modules/types/dom'
+
+import { Card } from '@data/listMassages.ts'
+
+import { getCollection, CollectionEntry } from 'astro:content'
+export const prerender = true
+const ListMassages = await getCollection('massages')
+
+// export async function getStaticPaths() {
+//   const posts = await getCollection("massages");
+
+//   return posts.map((post) => {
+//     return {
+//       params: {
+//         slug: post.slug,
+//       },
+//       props: {
+//         post,
+//       },
+//     };
+//   });
+// }
+---
+
+<section aria-labelledby="slider" class="fade-up grid gap-4 bg-primary text-[center,sm:left] container">
+	<div class="relative">
+		<span class="absolute hidden h-full w-8 bg-ternary opacity-80 -left-9 sm:block"></span>
+		<div>
+			<small class="drop-shadow-sm tracking-widest uppercase text-slate-300">Tous nos services</small>
+			<h3 id="slider" class="drop-shadow-md font-bold tracking-wide text-slate-100">
+				Les Massages que je vous propose réalisées à mon cabinet
+			</h3>
+		</div>
+		<div class="bgimage mt-2 flex-wrap gap-4 flex-row-5 sm:(flex-nowrap justify-between py-10)">
+			<p class="max-w-2xl text-[base,slate-100,start] leading-8">
+				Tous les massages sont effectués dans un environnement paisible et serein, où la détente et le bien-être
+				sont notre priorité. Votre peau reflète votre âme, et grâce aux techniques que je propose, elle
+				retrouvera sa jeunesse
+			</p>
+			<div class="flex gap-x-2">
+				<button
+					data-slideBtn
+					id="prev"
+					aria-label="show previous image"
+					class="grid place-items-center rounded-full bg-primary p-2 text-black opacity-90 ring-offset-2 ring-primary ring-offset-black disabled:bg-secondary hover:bg-primary disabled:text-ternary focus:outline-none focus-visible:ring-4"
+					disabled>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="36"
+						height="36"
+						class="pointer-events-none"
+						fill="currentColor"
+						viewBox="0 0 256 256">
+						<rect width="256" height="256" fill="none"></rect>
+						<circle
+							cx="128"
+							cy="128"
+							r="96"
+							fill="none"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="24"></circle>
+						<polyline
+							points="121.9 161.9 88 128 121.9 94.1"
+							fill="none"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="24"></polyline>
+						<line
+							x1="168"
+							y1="128"
+							x2="88"
+							y2="128"
+							fill="none"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="24"></line>
+					</svg>
+				</button>
+				<button
+					data-slideBtn
+					id="next"
+					aria-label="show next image"
+					class="grid place-items-center rounded-full bg-primary p-2 text-black ring-offset-2 ring-secondary ring-offset-ternary disabled:bg-secondary hover:bg-primary disabled:text-ternary focus:outline-none focus-visible:ring-4">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="36"
+						height="36"
+						class="pointer-events-none"
+						fill="currentColor"
+						viewBox="0 0 256 256">
+						<rect width="256" height="256" fill="none"></rect>
+						<circle
+							cx="128"
+							cy="128"
+							r="96"
+							fill="none"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="24"></circle>
+						<polyline
+							points="134.1 161.9 168 128 134.1 94.1"
+							fill="none"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="24"></polyline>
+						<line
+							x1="88"
+							y1="128"
+							x2="168"
+							y2="128"
+							fill="none"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="24"></line>
+					</svg>
+				</button>
+			</div>
+		</div>
+	</div>
+</section>
+<div class="overflow-hidden bg-secondary container">
+	<div class="relative w-full flex basis-96 pr-4 transition-transform duration-500" data-slideContainer>
+		{
+			Card.filter(Boolean).map(({ slug, title, description, image }, index) => {
+				return (
+					<>
+						<div
+							class="relative mt-10 w-full flex-shrink-0 flex-grow-0 pr-4 xs:w-auto xs:basis-92"
+							data-slide>
+							<a class="inline" href={'/' + slug} aria-label={`lien vers ${title}`}>
+								<div class="relative">
+									<h3 class="pointer-events-none bottom-2 left-2 bg-slate-100 text-[md,secondary,center,lg:left] font-bold tracking-wide transition-opacity p-5-1">
+										{title}
+									</h3>
+								</div>
+								<Image widths={[10]} src={image} alt={title} />
+
+								<h5 class="text-[base,white,center] leading-5 p-4-1">{description}</h5>
+							</a>
+						</div>
+					</>
+				)
+			})
+		}
+	</div>
+</div>
+<style>
+	.bgimage {
+		background-color: #1d5516;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 1000'%3E%3Cg %3E%3Ccircle fill='%231D5516' cx='50' cy='0' r='50'/%3E%3Cg fill='%23035b23' %3E%3Ccircle cx='0' cy='50' r='50'/%3E%3Ccircle cx='100' cy='50' r='50'/%3E%3C/g%3E%3Ccircle fill='%23006131' cx='50' cy='100' r='50'/%3E%3Cg fill='%23006740' %3E%3Ccircle cx='0' cy='150' r='50'/%3E%3Ccircle cx='100' cy='150' r='50'/%3E%3C/g%3E%3Ccircle fill='%23006d50' cx='50' cy='200' r='50'/%3E%3Cg fill='%23007361' %3E%3Ccircle cx='0' cy='250' r='50'/%3E%3Ccircle cx='100' cy='250' r='50'/%3E%3C/g%3E%3Ccircle fill='%23007872' cx='50' cy='300' r='50'/%3E%3Cg fill='%23007e84' %3E%3Ccircle cx='0' cy='350' r='50'/%3E%3Ccircle cx='100' cy='350' r='50'/%3E%3C/g%3E%3Ccircle fill='%23008396' cx='50' cy='400' r='50'/%3E%3Cg fill='%230087a9' %3E%3Ccircle cx='0' cy='450' r='50'/%3E%3Ccircle cx='100' cy='450' r='50'/%3E%3C/g%3E%3Ccircle fill='%23008bba' cx='50' cy='500' r='50'/%3E%3Cg fill='%23008fca' %3E%3Ccircle cx='0' cy='550' r='50'/%3E%3Ccircle cx='100' cy='550' r='50'/%3E%3C/g%3E%3Ccircle fill='%230092da' cx='50' cy='600' r='50'/%3E%3Cg fill='%230094e7' %3E%3Ccircle cx='0' cy='650' r='50'/%3E%3Ccircle cx='100' cy='650' r='50'/%3E%3C/g%3E%3Ccircle fill='%230096f2' cx='50' cy='700' r='50'/%3E%3Cg fill='%230096fb' %3E%3Ccircle cx='0' cy='750' r='50'/%3E%3Ccircle cx='100' cy='750' r='50'/%3E%3C/g%3E%3Ccircle fill='%233b96ff' cx='50' cy='800' r='50'/%3E%3Cg fill='%236f94ff' %3E%3Ccircle cx='0' cy='850' r='50'/%3E%3Ccircle cx='100' cy='850' r='50'/%3E%3C/g%3E%3Ccircle fill='%239592ff' cx='50' cy='900' r='50'/%3E%3Cg fill='%23b58fff' %3E%3Ccircle cx='0' cy='950' r='50'/%3E%3Ccircle cx='100' cy='950' r='50'/%3E%3C/g%3E%3Ccircle fill='%23D28CFF' cx='50' cy='1000' r='50'/%3E%3C/g%3E%3C/svg%3E");
+		background-attachment: fixed;
+		background-size: contain;
+	}
+</style>
+<!-- [@media(hover:hover)]:grayscale hover:grayscale-0 -->
+
+<script>
+	// Import the necessary libraries
+
+	// Define the variables
+	const slideBtns: HTMLElement[] = Array.from(document.querySelectorAll<HTMLElement>('[data-slideBtn]'))
+	const slideContainer: NonNullable<HTMLElement> = document.querySelector('[data-slideContainer]')!
+	const slides: HTMLElement[] = Array.from(document.querySelectorAll('[data-slide]'))
+
+	// Initialize the variables
+	let currentIndex = 0
+	let isMoving = false
+
+	// Define the function to handle the click event on the slide buttons
+	function handleSlideBtnClick(e: MouseEvent): void {
+		// If the slide is moving, return
+		if (isMoving) {
+			return
+		}
+
+		// Set the flag that the slide is moving
+		isMoving = true
+
+		// Get the id of the clicked button
+		const id = (e.currentTarget as HTMLButtonElement).id
+
+		// If the id is "prev", decrease the current index
+		if (id === 'prev') {
+			currentIndex--
+		} else {
+			// Otherwise, increase the current index
+			currentIndex++
+		}
+
+		// If the slide container exists, dispatch the "sliderMove" event
+		if (slideContainer) {
+			slideContainer.dispatchEvent(new Event('sliderMove'))
+		} else {
+			// Otherwise, log an error
+			console.error('Element [data-slideContainer] not found')
+		}
+	}
+
+	// Define the function to remove the disabled attribute from an array of elements
+	const removeDisabledAttribute = (els: HTMLElement[]): void => {
+		// Iterate over the elements
+		for (const el of els) {
+			// Remove the disabled attribute
+			el.removeAttribute('disabled')
+		}
+	}
+
+	// Define the function to add the disabled attribute to an array of elements
+	const addDisabledAttribute = (els: HTMLElement[]): void => {
+		// Iterate over the elements
+		for (const el of els) {
+			// Add the disabled attribute
+			el.setAttribute('disabled', 'true')
+		}
+	}
+
+	// Define the function to check if an element is a button
+	function isButton(element: HTMLElement): element is HTMLButtonElement {
+		// Return true if the element's tag name is "BUTTON"
+		return element.tagName === 'BUTTON'
+	}
+
+	// Iterate over the slide buttons and add event listeners
+	slideBtns.forEach((btn) => {
+		// If the button is a button, add an event listener for the "click" event
+		if (isButton(btn)) {
+			btn.addEventListener('click', handleSlideBtnClick)
+		}
+	})
+
+	// Add an event listener for the "sliderMove" event
+	slideContainer.addEventListener('sliderMove', () => {
+		// Translate the container to the right/left
+		slideContainer.style.transform = `translateX(-${currentIndex * slides[0].clientWidth}px)`
+
+		// Remove the disabled attributes from the slide buttons
+		removeDisabledAttribute(slideBtns)
+
+		// If the current index is 0, re-enable the disabled attribute for the first slide button
+		if (currentIndex === 0) {
+			addDisabledAttribute([slideBtns[0]])
+		}
+	})
+
+	// Add an event listener for the "transitionend" event
+	slideContainer.addEventListener('transitionend', () => (isMoving = false))
+
+	// Disable image drag events
+	document.querySelectorAll<HTMLElement>('[data-slide] img').forEach((img) => (img.ondragstart = () => false))
+
+	// Create a new IntersectionObserver
+	const slideObserver: IntersectionObserver = new IntersectionObserver(
+		([slide]) => {
+			// If the slide is intersecting, add the disabled attribute to the next slide button
+			if (slide.isIntersecting) {
+				addDisabledAttribute([slideBtns[1]])
+			}
+		},
+		{ threshold: 0.75 }
+	)
+
+	// Observe the last slide
+	slideObserver.observe(slides[slides.length - 1])
+</script>

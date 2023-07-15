@@ -1,0 +1,125 @@
+---
+//import { Icon } from 'astro-icon'
+import { SocialItem, SiteMetadata } from 'src/consts.ts'
+import Hero_img from '@components/home/hero__circle__img.astro'
+import photoMarina80 from '@img/marina80.webp'
+import ActionButton from '@components/miniComoponents/Action_Button.astro'
+
+let {
+	social: [Contact, SocialNetwork]
+} = SiteMetadata /* destructuring to get the social networks from consts */
+
+/* using Set to avoid duplicate */
+const listsOfQality: Set<string> = new Set([
+	'Hygiène parfaite',
+	'Large choix de massages',
+	'Un calme enfin retrouvé',
+	'Formatrice pour devenir praticien',
+	'Des soins pour rester jeune'
+])
+
+											// <Icon class="cq-size aspect-square text-primary-dark size-7" name={icon} />
+
+---
+
+<section class="bg-bg container lg:(flex flex-row-reverse)">
+	<Hero_img src={photoMarina80} alt={'portrait de Marina'} />
+
+	<section class="w-full">
+		<div class="text-xl">
+			<h1 class="from-calltoaction to-yell bg-gradient-to-rt bg-clip-text p-5 text-[center,6xl,transparent]">
+				Marina Li
+			</h1>
+
+			<h2 class="balance mt-2 p-1 text-[md,center,yell] font-ternary">
+				Diplôme de la Manuel Modeling of the Face and Body et de la formation Extension de Cils Kalinka
+			</h2>
+		</div>
+
+		<!-- liste des qualités dans le HERO -->
+		<section>
+			<ul class="gap-y-4 flex-col-1 my-2" area-label="liste des qualités de Marina">
+				{
+					Array.from(listsOfQality, (element) => (
+						<div class="flex-row-4">
+							<li class="text-base">
+								<svg
+									class="mr-2 inline fill-primary stroke-[2,yell] size-6 -translate-y-.50"
+									stroke-linecap="round"
+									stroke-linejoin="round">
+									<circle cx="12" cy="12" r="11" />
+									<path d="m8 13 2.165 2.165a1 1 0 0 0 1.521-.126L16 9" fill="none" />
+								</svg>
+								{element}
+							</li>
+						</div>
+					))
+				}
+			</ul>
+		</section>
+
+		<!-- buttons -->
+		<section class="grid gap-4 md:flex">
+			<ActionButton
+				href="/contact"
+				icon="i-material-symbols:calendar-add-on-outline-sharp"
+				text="prendre Rendez-vous"
+				btnColor="btn-red-300"
+				textColor="text-emerald-900"
+			/>
+			<ActionButton href="/pricing" icon="i-carbon:catalog" text="nos services" textColor="text-slate-100" />
+			<ActionButton
+				href={`tel:+33${Contact[1].link.replace(/ /g, '').substring(1)}`}
+				icon="fa6-solid:phone-volumecall"
+				mobileANDpc={false}
+				text={Contact[1].link}
+				textColor="text-slate-100"
+				clx={[]}
+			/>
+		</section>
+
+		<!-- Social link incons -->
+		<section>
+			<!-- social network -->
+			<div class="container-type relative flex flex-row text-xs p-5-0 my-5">
+				{
+					SocialNetwork.filter(Boolean).map(({ icon, name, link }: SocialItem, index: number) => {
+						return (
+							<>
+								<a area-label={` lien externe vers ${name}`} href={link}>
+									<span class="relative z-10 shrink-0 flex-wrap rounded-full bg-slate-100 ring-1 hover:shadow-blue-1 ring-slate-500 p-2-4 align-baseline flex-row-5 btn ">
+										<div class="relative isolate z-10 flex-row-5">
+											<p class="text-[md,primary] text-cqi <sm:hidden">{name}</p>
+										</div>
+									</span>
+								</a>
+
+								{index < SocialNetwork.length - 1 ? (
+									<hr class="z-0 h-1 flex|1|1|auto translate-y-3 scale-150 bg-slate-100" />
+								) : (
+									''
+								)}
+							</>
+						)
+					})
+				}
+			</div>
+		</section>
+	</section>
+
+	<style>
+		.container-type {
+			container-type: inline-size;
+		}
+
+		@container (max-width: 500px) {
+			.cq-size {
+				max-width: 45px;
+				aspect-ratio: 1/1;
+			}
+		}
+		.text-balance {
+			text-wrap: balance;
+		}
+	</style>
+</section>

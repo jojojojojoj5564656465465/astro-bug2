@@ -1,0 +1,183 @@
+---
+import NavLinks from 'src/components/miniComoponents/NavLinks.astro'
+---
+
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+	</head>
+	<body>
+		<a href="#" class="logo">LOGO</a>
+		<input type="checkbox" id="nav-toggler" class="nav-toggler" />
+		<label for="nav-toggler" class="nav-toggler-label">
+			<i class="fas fa-bars fa-2x burger"></i>
+		</label>
+		<nav class="bg-primary">
+			<div id="underline bg-primary "></div>
+			<NavLinks />
+		</nav>
+
+		<slot />
+
+		<script>
+			const nav_links: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.nav-link')
+			const burger: HTMLElement | null = document.querySelector('.burger')
+
+			// Update underline on window resize
+			window.onresize = () => {
+				const active = document.querySelector('.active')
+				underlineLink(active)
+			}
+
+			// Function to update the position and width of the underline element
+			function underlineLink(elem: HTMLElement | undefined): void {
+				const underline: HTMLElement = document.getElementById('underline')
+				underline.style.left = `\${elem.offsetLeft}px`
+				underline.style.width = `\${elem.offsetWidth}px`
+			}
+
+			// Add click event listener to all nav links
+			nav_links.forEach((nav_link) => {
+				nav_link.addEventListener('click', (e: MouseEvent) => {
+					// Remove active class from all links
+					nav_links.forEach((link) => link.classList.remove('active'))
+					// Add active class to clicked link
+					e.target?.classList?.add('active')
+					// Update underline position and width
+					underlineLink(e?.target)
+				})
+			})
+
+			// Add click event listener to burger menu
+			burger?.addEventListener('click', () => {
+				// Toggle between fa-bars and fa-times classes
+				burger?.classList.toggle('fa-bars')
+				burger?.classList.toggle('fa-times')
+			})
+		</script>
+	</body>
+</html>
+
+<style>
+	body {
+		margin: 0;
+		padding: 0;
+		font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	a {
+		text-decoration: none;
+	}
+
+	ul {
+		margin: 0;
+		padding: 0;
+	}
+
+	header {
+		height: 60px;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+
+		border-bottom: 1px solid #ccc;
+	}
+
+	.nav-toggler,
+	.nav-toggler-label {
+		display: none;
+	}
+
+	.logo {
+		font-size: 1.5rem;
+		font-weight: 500;
+	}
+
+	nav {
+		position: relative;
+		line-height: 60px;
+	}
+
+	.navbar {
+		display: flex;
+	}
+
+	.navbar .nav-item {
+		margin: 0 0.5rem;
+	}
+
+	.navbar .nav-link {
+		padding: 0.5rem 0.25rem;
+		color: #888;
+	}
+
+	.navbar .nav-link:hover,
+	.navbar .nav-link.active {
+		color: #0a0a0a;
+	}
+
+	#underline {
+		position: absolute;
+		bottom: 0;
+		height: 5px;
+		background-color: #333;
+		width: 65px;
+		border-radius: 5px 5px 0 0;
+		transition: 0.3s;
+	}
+
+	@media screen and (max-width: 768px) {
+		#underline {
+			display: none;
+		}
+		header {
+			position: relative;
+		}
+		.nav-toggler-label {
+			position: absolute;
+			top: 0;
+			right: 1rem;
+			display: flex;
+			align-items: center;
+			height: 100%;
+		}
+
+		nav {
+			position: absolute;
+			top: 100%;
+			width: 100%;
+			background-color: #fafbfd;
+			line-height: 40px;
+			transform: scale(1, 0);
+			transform-origin: top;
+			transition: 0.3s;
+		}
+
+		.nav-toggler:checked ~ nav {
+			transform: scale(1, 1);
+		}
+
+		.navbar {
+			display: block;
+			width: 100%;
+		}
+
+		.navbar .nav-item {
+			margin: 0;
+		}
+
+		.navbar .nav-link {
+			display: block;
+			padding-left: 1rem;
+			width: 100%;
+		}
+
+		.navbar .nav-link:hover,
+		.navbar .nav-link.active {
+			background-color: #f3f3f3;
+		}
+	}
+</style>

@@ -1,0 +1,36 @@
+---
+import NavLinks from 'src/components/miniComoponents/NavLinks.astro'
+import { MenuItems } from 'src/data/MenuItems'
+---
+
+<nav class="my-6 list-none gap-6 flex-row-3" id="nav">
+	<ul class="flex gap-2">
+		{
+			MenuItems.map(({ title, url, icon }) => (
+				<li
+					class="capitalize text-[hover:calltoaction,active:red] md:hover:(underline underline-offset-4)"
+					data-content={icon}
+					area-label={title}>
+					<a aria-label={`lien vers ${title}`} href={url}>
+						{title}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+	<div id="icons"></div>
+</nav>
+
+<script>
+	// const links = document.querySelectorAll('nav li')
+
+	// icons.addEventListener('click', () => {
+	// 	nav.classList.toggle('active')
+	// })
+
+	// links.forEach((link) => {
+	// 	link.addEventListener('click', () => {
+	// 		nav.classList.remove('active')
+	// 	})
+	// })
+</script>

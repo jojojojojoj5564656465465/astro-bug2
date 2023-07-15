@@ -1,0 +1,11 @@
+---
+import { list as listOfPrice } from '@data/pricing'
+import PricingPage from '@components/pricing.astro'
+import Layout from 'src/layouts/Layout.astro'
+---
+
+<Layout title="Tarifs">
+	<PricingPage list={listOfPrice} />
+</Layout>
+
+

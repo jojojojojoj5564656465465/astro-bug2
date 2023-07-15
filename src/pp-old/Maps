@@ -1,0 +1,27 @@
+---
+//import { Icon } from 'astro-icon'
+import video0 from 'src/assets/video/video0.mp4'
+---
+
+<h2 class="tracking-wide text-white ">Notre Adresse</h2>
+<p class="my-4-2">Nous sommes citué au coeurs de paris métro Saint-paul Ligne 1</p>
+
+<section class="grid mb-2 gap-5 lg:(grid-cols-2 mb-10)">
+	<div class="w-full">
+		<iframe
+			area-label="Plan Google de l'adresse de Marina"
+			src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d10500.51038956611!2d2.3628876!3d48.8557772!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e671e48cbad06d%3A0x3b622cc28acb38ee!2sMarina%20Li%20-%20Kobido%20Facial%20Massage%2C%20Guasha%2C%20MTC-Facelift!5e0!3m2!1sfr!2sfr!4v1684622212810!5m2!1sfr!2sfr"
+			width="100%"
+			height="350"
+			class="mb-6 block rounded-md"
+			allowfullscreen=""
+			loading="lazy"
+			referrerpolicy="no-referrer-when-downgrade"></iframe>
+		<!-- <Icon class="inline text-slate-100 size-8" name={'fa:map-marker'} /> -->
+		<p class="inline">Paris, 6 rue de Jarente</p>
+	</div>
+
+	<video id="background-video" loop muted>
+		<source src={video0} type={'video/mp4'} />
+	</video>
+</section>
