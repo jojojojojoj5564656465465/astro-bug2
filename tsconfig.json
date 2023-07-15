@@ -4,10 +4,11 @@
     "noEmit": true,
     "strictNullChecks": true,
     "allowJs": true,
+    "target": "esnext",
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
     "baseUrl": ".",
-    "types": ["@astrojs/image/client"],
+    "types": ["unplugin-icons/types/astro","@astrojs/image/client"],
     "paths": {
       "@components/*": ["src/components/*"],
       "@mini/*": ["@components/miniComoponents/*"],
@@ -19,5 +20,6 @@
       "@layouts/*": ["src/layouts/*"],
       "@data/*": ["src/data/*"]
     }
-  }
+  },
+  "exclude": ["**/dist", "**/node_modules", "**/test", "dist"]
 }
