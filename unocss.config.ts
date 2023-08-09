@@ -8,7 +8,8 @@ import {
   transformerVariantGroup
 } from 'unocss'
 import fs from 'node:fs/promises'
-
+import { string } from 'astro/zod'
+import type { Before, Category } from 'src/types.ts'
 export default defineConfig({
   //extractors: [extractorSvelte],
   transformers: [transformerDirectives(), transformerVariantGroup()],
@@ -28,7 +29,6 @@ export default defineConfig({
       collections: {
         'i-': async (iconName) => {
           return await fetch(`src/icons/${iconName}.svg`).then((res) => {
-            console.log(res.text())
             return res.text()
           })
         }
@@ -85,50 +85,41 @@ export default defineConfig({
     ],
     [
       /^flex\|([0-9])\|([0-9])\|?([a-z0-9%]{2,})?$/,
-      ([, grow, shrink, basis]) => {
+      (match) => {
+        let [, grow, shrink, basis] = match as [unknown, number, number, string]
         if (Number(basis) && !basis.includes('%')) {
-          basis = `${Number(basis) / 4}rem`
+          basis &&= `${Number(basis) / 4}rem`
         }
+        basis ??= 'auto'
         return {
-          flex: `${grow} ${shrink} ${basis || 'auto'}`
+          flex: `${grow} ${shrink} ${basis}`
         }
       }
     ],
     [
       /^flex-(row|col)-([1-9])$/,
-      ([, direction, number]) => {
-        // type PositionProps = Readonly<'start' | 'center' | 'end'>
-        // const positions = {
-        // 	1: ['start', 'start'],
-        // 	2: ['center', 'start'],
-        // 	3: ['end', 'start'],
-        // 	4: ['start', 'center'],
-        // 	5: ['center', 'center'],
-        // 	6: ['end', 'center'],
-        // 	7: ['start', 'end'],
-        // 	8: ['center', 'end'],
-        // 	9: ['end', 'end']
-        // } as const satisfies Record<number, readonly [PositionProps, PositionProps]>
-
-        const positionsArray = ['start', 'center', 'end'] as const
-        type PositionProps = (typeof positionsArray)[number]
-        const positions: Record<
+      (match) => {
+        const [, direction, number] = match as [unknown, 'row' | 'col', number]
+        type PositionProps = Readonly<'start' | 'center' | 'end'>
+        const positions = {
+          1: ['start', 'start'],
+          2: ['center', 'start'],
+          3: ['end', 'start'],
+          4: ['start', 'center'],
+          5: ['center', 'center'],
+          6: ['end', 'center'],
+          7: ['start', 'end'],
+          8: ['center', 'end'],
+          9: ['end', 'end']
+        } as const satisfies Record<
           number,
           readonly [PositionProps, PositionProps]
-        > = {}
-        let count = Number(1)
-        // for loop to create all permutation
-        for (let i = 0; i < positionsArray.length; i++) {
-          for (let j = 0; j < positionsArray.length; j++) {
-            positions[count] = [positionsArray[i], positionsArray[j]]
-            count++
-          }
-        }
+        >
+
         const columORrow: 'column' | 'row' =
           direction === 'row' ? 'row' : 'column'
 
-        const [justify, align] =
-          positions[Number(number) as keyof typeof positions]
+        const [justify, align] = positions[number as keyof typeof positions]
 
         return {
           display: 'flex',
@@ -139,9 +130,18 @@ export default defineConfig({
       },
       { autocomplete: 'flex-(col|row)-(1|2|3|4|5|6|7|8|9)' }
     ],
+
     [
       /^(p|m)-(\d+)-(\d+)?-?(\d+|auto)?-?(\d+|auto)?$/,
-      ([, PaddingOrMargin, t, r, b, l]) => {
+      (match) => {
+        let [, PaddingOrMargin, t, r, b, l] = match as [
+          unknown,
+          'p' | 'm',
+          number,
+          number,
+          number | 'auto',
+          number | 'auto'
+        ]
         const isPadding = PaddingOrMargin === 'm' ? false : (true as boolean)
         const List: string[] = []
         for (const e of [t, r, b, l].filter(Boolean)) {
@@ -157,30 +157,21 @@ export default defineConfig({
     ],
     [
       /^(px|py|mx|my)-(\d+)-?(\d+)?$/,
-      ([, direction, s, optional]) => {
-        const dictionary: {
-          [key: string]: string | ((my_mx_py_px: string) => string)
-        } = {
-          p: 'padding',
-          m: 'margin',
-          y: 'block',
-          x: 'inline',
+      (match) => {
+        const [, direction, s, optional] = match as [
+          unknown,
+          'px' | 'py' | 'mx' | 'my',
+          number,
+          number
+        ]
+        const combination = {
+          px: 'padding-inline',
+          py: 'padding-block',
+          mx: 'margin-inline',
+          my: 'margin-block'
+        } as const satisfies Record<typeof direction, string>
 
-          directionXorY(my_mx_py_px: string) {
-            const set: Set<string> = new Set()
-            for (const letter of my_mx_py_px) {
-              const value = this[letter]
-              if (typeof value === 'string') {
-                set.add(value)
-              }
-            }
-            return Array.from(set).join('-')
-          }
-        }
-
-        const returndirection = (
-          dictionary.directionXorY as (my_mx_py_px: string) => string
-        )(direction)
+        const returndirection = combination[direction]
 
         let value = `${Number(s) / 4}em`
         value += optional ? ` ${+optional / 4}em` : ''
@@ -190,8 +181,9 @@ export default defineConfig({
     ],
     [
       /^size-(\d+)$/,
-      ([, s]) => {
-        const sizeInRem: number = +s / 4
+      (match) => {
+        let [, s] = match as [unknown, number]
+        const sizeInRem: number = s / 4
         return [
           {
             'block-size': `${sizeInRem}rem`,
@@ -200,21 +192,58 @@ export default defineConfig({
         ]
       },
       { autocomplete: 'size-<num>' }
+    ],
+    [
+      /^(mx|my)-trim$/,
+      (match) => {
+        const [, s] = match as [unknown, 'mx' | 'my']
+
+        interface Dictionary {
+          mx: 'inline'
+          my: 'block'
+          fn(x: 'mx' | 'my'): 'inline' | 'block'
+        }
+        const dictionary: Dictionary = {
+          mx: 'inline',
+          my: 'block',
+          fn(x) {
+            return this[x]
+          }
+        }
+        return [
+          {
+            'margin-trim': dictionary.fn(s)
+          }
+        ]
+      },
+      { autocomplete: 'mx|px-trim' }
     ]
   ],
 
   shortcuts: [
     [
       /^(font|bg|border|stroke|outline|underline|ring|divide|text)-\[(.*)\]$/,
-      ([, category, stringElement]) => {
+      (match) => {
+        const [, category, stringElement] = match as [
+          unknown,
+          (
+            | 'font'
+            | 'bg'
+            | 'border'
+            | 'stroke'
+            | 'outline'
+            | 'underline'
+            | 'ring'
+            | 'divide'
+            | 'text'
+          ),
+          string
+        ]
+
         const mediaQuery = ['sm', 'md', 'lg', 'xl', '2xl'] as const
-
         type MediaQuery = (typeof mediaQuery)[number]
-        const rulesForBrakets: Record<'open' | 'close', string> = {
-          open: '[',
-          close: ']'
-        }
 
+        // Function to remove extra spaces and convert "|" to ","
         const removeSpaceInString = (string: string): string => {
           return string
             .trim()
@@ -223,17 +252,19 @@ export default defineConfig({
             .replace(/\|/g, ',')
         }
 
+        // Function to split the input string into a Set of individual CSS rules
         function splitString(str: string): Set<string> {
           const result: Set<string> = new Set()
           let currentElement = ''
           let parenthesesCount = true
 
           for (const char of removeSpaceInString(str)) {
-            if (char === rulesForBrakets.open) {
+            if (char === '[') {
               parenthesesCount = false
-            } else if (char === rulesForBrakets.close) {
+            } else if (char === ']') {
               parenthesesCount = true
             }
+
             if (char === ',' && parenthesesCount === true) {
               result.add(currentElement.toLowerCase().trim())
               currentElement = ''
@@ -241,53 +272,55 @@ export default defineConfig({
               currentElement += char.trim()
             }
           }
+
           if (currentElement.trim() !== '') {
             result.add(currentElement.toLowerCase().trim())
           }
+
           return result
         }
+        const regex = {
+          NestedValisation: new RegExp(
+            '(\\w+):\\[(.+?)\\]|(\\w+):(\\w+):\\[(.+?)\\]'
+          ),
+          BeforeCapture: new RegExp('(.*)\\[(.*)\\]')
+        }
 
-        const regexAtribuffy = new RegExp(
-          `([^:]+):\\${rulesForBrakets.open}([^\\]]+)\\${rulesForBrakets.close}$`
-        )
-        const mycustomSet = new Set<string>()
+        const customSet = new Set<string>()
 
-        for (const v of splitString(stringElement)) {
-          if (v.includes(':')) {
-            if (v.match(regexAtribuffy)) {
-              const match = v.match(regexAtribuffy)
+        for (const value of splitString(stringElement)) {
+          if (value.includes(':')) {
+            const match = value.match(regex.NestedValisation)
 
-              if (match) {
-                const [, md, rest] = match
-                if (!mediaQuery.includes(md as MediaQuery)) {
-                  throw new Error('bad media querie')
-                }
-                const [breakpoint] = md.trim().split(':')
+            if (match) {
+              const [, md, rest] = match
+              const breakpoint = md.trim()
 
-                for (const e of rest.split(',')) {
-                  if (e.includes(':')) {
-                    const index: number = e.lastIndexOf(':')
-                    const state = e.slice(0, index)
-                    const css = e.slice(index + 1)
-                    const result = `${breakpoint}:${state}:${category}-${css.trim()}`
-                    mycustomSet.add(result)
-                  } else {
-                    mycustomSet.add(`${breakpoint}:${category}-${e.trim()}`)
-                  }
+              for (const entry of rest.split(',')) {
+                if (entry.includes(':')) {
+                  const index: number = entry.lastIndexOf(':')
+                  const state = entry.slice(0, index)
+                  const css = entry.slice(index + 1)
+                  const result = `${breakpoint}:${state}:${category}-${css.trim()}`
+                  customSet.add(result)
+                } else {
+                  customSet.add(`${breakpoint}:${category}-${entry.trim()}`)
                 }
               }
             } else {
-              const index = v.lastIndexOf(':')
-              const breakpointORstate = v.slice(0, index)
-              const css = v.slice(index + 1)
-              const value = `${breakpointORstate}:${category}-${css.trim()}`
-              mycustomSet.add(value.trim())
+              const index: number = value.lastIndexOf(':')
+              const breakpointOrState = value.slice(0, index)
+              const css = value.slice(index + 1)
+              const result = `${breakpointOrState}:${category}-${css.trim()}`
+              customSet.add(result.trim())
             }
           } else {
-            mycustomSet.add(`${category}-${v.trim()}`)
+            customSet.add(`${category}-${value.trim()}`)
           }
         }
-        return Array.from(mycustomSet).join(' ')
+
+        return Array.from(customSet).join(' ')
+        //text-red text-3x **hover:text-pink
       }
     ],
     {
@@ -296,17 +329,16 @@ export default defineConfig({
 
     [
       /^btn-(.*)$/,
-      ([, color]) => {
+      ([, color], { theme }) => {
         const defaultBtn =
           'p-3-9 active:rotate-2 font-semibold rounded-lg block border md:inline-block font-medium text-center focus:outline-none focus:ring'
-        if (color.indexOf('-') === -1) {
+        if (!color.includes('-')) {
           return `bg-${color} hover:bg-${color} focus:(rotate-1 bg-${color}) ${defaultBtn}`
-        } else {
-          const [c, d] = color.split('-')
-          const e: string =
-            ~~d > 500 ? (~~d - 200).toString() : (~~d + 200).toString()
-          return `bg-${c}-${d} hover:bg-${c}-${e} focus:(rotate-1 bg-${c}-${e}) ${defaultBtn}`
         }
+        const [c, d] = color.split('-')
+        const e: string =
+          ~~d > 500 ? (~~d - 200).toString() : (~~d + 200).toString()
+        return `bg-${c}-${d} hover:bg-${c}-${e} focus:(rotate-1 bg-${c}-${e}) ${defaultBtn}`
       },
       { autocomplete: 'btn-$colors' }
     ],
