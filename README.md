@@ -6,6 +6,7 @@ npm create astro@latest -- --template minimal
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github.com/jojojojojoj5564656465465/astro-bug2)
 [![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github.com/jojojojojoj5564656465465/astro-bug2)
+ [![Open in Codeanywhere](https://codeanywhere.com/img/open-in-codeanywhere-btn.svg)](https://app.codeanywhere.com/#https://github.com/jojojojojoj5564656465465/astro-bug2)
 
 > 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
